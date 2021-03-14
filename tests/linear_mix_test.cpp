@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "LinearMix.h"
-#include <bitset>
 
 class LinearMixTest : public ::testing::Test
 {
@@ -18,9 +17,9 @@ TEST_F(LinearMixTest, GetComponentsFromRedColor)
     auto components = linearMix.substractComponentColors(color);
 
     //Assert
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[0]), 0x1f);
-    ASSERT_EQ(std::any_cast<std::bitset<6>>(components[1]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[2]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::RedSubpixel>(components[defines::Component::Red]), 0x1f);
+    ASSERT_EQ(std::any_cast<defines::GreenSubpixel>(components[defines::Component::Green]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::BlueSubpixel>(components[defines::Component::Blue]), 0x00);
 }
 
 TEST_F(LinearMixTest, GetComponentsFromGreenColor)
@@ -33,9 +32,9 @@ TEST_F(LinearMixTest, GetComponentsFromGreenColor)
     auto components = linearMix.substractComponentColors(color);
 
     //Assert
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[0]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<6>>(components[1]), 0x3f);
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[2]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::RedSubpixel>(components[defines::Component::Red]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::GreenSubpixel>(components[defines::Component::Green]), 0x3f);
+    ASSERT_EQ(std::any_cast<defines::BlueSubpixel>(components[defines::Component::Blue]), 0x00);
 }
 
 TEST_F(LinearMixTest, GetComponentsFromBlueColor)
@@ -48,9 +47,9 @@ TEST_F(LinearMixTest, GetComponentsFromBlueColor)
     auto components = linearMix.substractComponentColors(color);
 
     //Assert
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[0]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<6>>(components[1]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[2]), 0x1f);
+    ASSERT_EQ(std::any_cast<defines::RedSubpixel>(components[defines::Component::Red]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::GreenSubpixel>(components[defines::Component::Green]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::BlueSubpixel>(components[defines::Component::Blue]), 0x1f);
 }
 
 TEST_F(LinearMixTest, GetComponentsFromBlackColor)
@@ -63,9 +62,9 @@ TEST_F(LinearMixTest, GetComponentsFromBlackColor)
     auto components = linearMix.substractComponentColors(color);
 
     //Assert
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[0]), 0x1f);
-    ASSERT_EQ(std::any_cast<std::bitset<6>>(components[1]), 0x3f);
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[2]), 0x1f);
+    ASSERT_EQ(std::any_cast<defines::RedSubpixel>(components[defines::Component::Red]), 0x1f);
+    ASSERT_EQ(std::any_cast<defines::GreenSubpixel>(components[defines::Component::Green]), 0x3f);
+    ASSERT_EQ(std::any_cast<defines::BlueSubpixel>(components[defines::Component::Blue]), 0x1f);
 }
 
 TEST_F(LinearMixTest, GetComponentsFromWhiteColor)
@@ -78,9 +77,9 @@ TEST_F(LinearMixTest, GetComponentsFromWhiteColor)
     auto components = linearMix.substractComponentColors(color);
 
     //Assert
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[0]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<6>>(components[1]), 0x00);
-    ASSERT_EQ(std::any_cast<std::bitset<5>>(components[2]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::RedSubpixel>(components[defines::Component::Red]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::GreenSubpixel>(components[defines::Component::Green]), 0x00);
+    ASSERT_EQ(std::any_cast<defines::BlueSubpixel>(components[defines::Component::Blue]), 0x00);
 }
 
 TEST_F(LinearMixTest, LengthGradientLessThenThreeReturnListWithColorsProvidedInParameters) {
