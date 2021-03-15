@@ -22,8 +22,22 @@ screen::BufferScreen screen::ScreenBuffer::getScreen() {
        if (needToReverse) {
            std::reverse(oneline.begin(), oneline.end());
        }
-
        return screen::BufferScreen(screenHeight, oneline);
+   } else if (cornersColors.downLeftCorner.has_value()) {
+        //calculate first position in horizontal line
+        uint16_t startTemp{cornersColors.topLeftCorner}, endTemp{cornersColors.downLeftCorner.value()};
+        if (cornersColors.topLeftCorner > cornersColors.downLeftCorner) {
+            startTemp = cornersColors.downLeftCorner.value();
+            endTemp = cornersColors.topLeftCorner;
+        }
+        auto firstPixelsInLines = linearMix.mix(startTemp, endTemp, screenHeight);
+           
+        screen::BufferScreen buffer;
+        for (auto& firstPixel : firstPixelsInLines) {
+            auto oneline = linearMix.mix(firstPixel, cornersColors.topRightCorner, screenWidth);
+            buffer.emplace_back(oneline);
+        }
+        return buffer;
    }
    return screen::BufferScreen(0, defines::OneLineGradient(0));
 }
