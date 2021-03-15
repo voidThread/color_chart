@@ -111,3 +111,32 @@ TEST_F(LinearMixTest, LengthGradientGraterThenThreeReturnListWithSizeEqualLenght
     //Assert
     ASSERT_EQ(gradient.size(), gradientLength);
 }
+
+TEST_F(LinearMixTest, CalculateMidleBetweenTwoColorsReturnOneAdditional) {
+    //Arrange
+    using namespace color_chart;
+    defines::RGB565 blackColor{0x0000};
+    defines::RGB565 whiteColor{0xffff};
+    std::size_t gradientLength{3};
+    
+    //Act
+    auto gradient = linearMix.mix(blackColor, whiteColor, gradientLength);
+
+    //Assert
+    ASSERT_EQ(gradient.front(), blackColor);
+    ASSERT_EQ(*std::next(gradient.begin()), 0x7BEF);
+    ASSERT_EQ(gradient.back(), whiteColor);
+}
+
+TEST_F(LinearMixTest, ConvertSubpixelsToRGB565) {
+    //Arrange
+    using namespace color_chart;
+    defines::Subpixels whiteColor{defines::RedSubpixel{0x1f}, defines::GreenSubpixel{0x3f},
+    defines::BlueSubpixel{0x1f}};
+
+    //Act
+    auto rgbColor = linearMix.makeRGB565(whiteColor);
+
+    //Assert
+    ASSERT_EQ(rgbColor, 0xffff);
+}

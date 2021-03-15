@@ -2,6 +2,7 @@
 #include <bitset>
 #include <array>
 #include <any>
+#include <iostream>
 
 using namespace color_chart;
 
@@ -17,9 +18,10 @@ std::list<defines::RGB565> equations::LinearMix::mix(defines::RGB565 startColor,
     startComponents = substractComponentColors(startColor);
     endComponents = substractComponentColors(endColor);
     
-    for (std::size_t x{1}; x < gradientLenght; x++) {
+    for (std::size_t x{1}; x < gradientLenght-1; x++) {
         gradient.emplace_back(makeRGB565(calculateNewColor(x, gradientLenght)));
     }
+    gradient.emplace_back(endColor);
 
     return gradient;
 }
@@ -39,28 +41,28 @@ defines::Subpixels equations::LinearMix::substractComponentColors(defines::RGB56
 
 defines::Subpixels equations::LinearMix::calculateNewColor(int pixelNumber, std::size_t gradientLength)
 {
-/*    for (std::size_t subpixel{defines::Component::Red}; subpixel <= defines::Component::Blue; subpixel++) {
-        auto newSubpixel = startComponents[subpixel] + (pixelNumber / (gradientLength-1) * 
-         (std::any_cast<endComponents[subpixel].to_ulong() - startComponents[subpixel].to_ulong());
-    }*/
-    auto redNewSubpixel = std::any_cast<defines::RedSubpixel>(startComponents[defines::Component::Red]).to_ulong() + 
-        (pixelNumber / (gradientLength-1) * 
-     (std::any_cast<defines::RedSubpixel>(endComponents[defines::Component::Red]).to_ulong() - 
-      std::any_cast<defines::RedSubpixel>(startComponents[defines::Component::Red]).to_ulong()));
+    defines::RedSubpixel redNewSubpixel{static_cast<unsigned long long>
+     ((std::any_cast<defines::RedSubpixel>(endComponents[defines::Component::Red]).to_ulong() - 
+      std::any_cast<defines::RedSubpixel>(startComponents[defines::Component::Red]).to_ulong()) * ((float)pixelNumber / (gradientLength-1)) + 
+         std::any_cast<defines::RedSubpixel>(startComponents[defines::Component::Red]).to_ulong())};
 
-    auto greenNewSubpixel = std::any_cast<defines::GreenSubpixel>(startComponents[defines::Component::Green]).to_ulong() + 
-        (pixelNumber / (gradientLength-1) * 
-     (std::any_cast<defines::GreenSubpixel>(endComponents[defines::Component::Green]).to_ulong() - 
-      std::any_cast<defines::GreenSubpixel>(startComponents[defines::Component::Green]).to_ulong()));
+    defines::GreenSubpixel greenNewSubpixel{static_cast<unsigned long long>
+     ((std::any_cast<defines::GreenSubpixel>(endComponents[defines::Component::Green]).to_ulong() - 
+      std::any_cast<defines::GreenSubpixel>(startComponents[defines::Component::Green]).to_ulong()) * ((float)pixelNumber / (gradientLength-1)) +
+    std::any_cast<defines::GreenSubpixel>(startComponents[defines::Component::Green]).to_ulong())};
 
-    auto blueNewSubpixel = std::any_cast<defines::BlueSubpixel>(startComponents[defines::Component::Blue]).to_ulong() + 
-        (pixelNumber / (gradientLength-1) * 
-     (std::any_cast<defines::BlueSubpixel>(endComponents[defines::Component::Blue]).to_ulong() - 
-      std::any_cast<defines::BlueSubpixel>(startComponents[defines::Component::Blue]).to_ulong()));
-
-     return defines::Subpixels{redNewSubpixel, greenNewSubpixel, blueNewSubpixel};
+    defines::BlueSubpixel blueNewSubpixel{static_cast<unsigned long long>
+     ((std::any_cast<defines::BlueSubpixel>(endComponents[defines::Component::Blue]).to_ulong() - 
+      std::any_cast<defines::BlueSubpixel>(startComponents[defines::Component::Blue]).to_ulong()) * ((float)pixelNumber / (gradientLength-1)) + 
+     std::any_cast<defines::BlueSubpixel>(startComponents[defines::Component::Blue]).to_ulong())};
+     
+    return defines::Subpixels{redNewSubpixel, greenNewSubpixel, blueNewSubpixel};
 }
 
 defines::RGB565 equations::LinearMix::makeRGB565(defines::Subpixels color) {
-    return defines::RGB565{0};
+    defines::RGB565 temp{0};
+    temp += std::any_cast<defines::RedSubpixel>(color[defines::Component::Red]).to_ulong() << 11;
+    temp += std::any_cast<defines::GreenSubpixel>(color[defines::Component::Green]).to_ulong() << 5;
+    temp += std::any_cast<defines::BlueSubpixel>(color[defines::Component::Blue]).to_ulong();
+    return defines::RGB565{temp};
 }
