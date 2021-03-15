@@ -13,6 +13,9 @@ std::list<defines::RGB565> equations::LinearMix::mix(defines::RGB565 startColor,
         return std::list{startColor, endColor};
     }
 
+    if (startColor > endColor)
+        std::swap(startColor, endColor);
+
     std::list<defines::RGB565> gradient{startColor};
 
     startComponents = substractComponentColors(startColor);
