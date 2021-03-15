@@ -139,9 +139,7 @@ TEST_F(LinearMixTest, CalculateMidleBetweenTwoColorsInvertedReturnOneAdditional)
     auto gradient = linearMix.mix(whiteColor, blackColor, gradientLength);
 
     //Assert
-//    ASSERT_EQ(gradient.front(), whiteColor);
     ASSERT_EQ(*std::next(gradient.begin()), 0x7BEF);
-//    ASSERT_EQ(gradient.back(), blackColor);
 }
 
 TEST_F(LinearMixTest, ConvertSubpixelsToRGB565) {
