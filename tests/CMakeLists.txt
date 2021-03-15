@@ -8,11 +8,13 @@ find_package(GTest REQUIRED)
 find_package(GTest REQUIRED)
 
 set(TESTS
-	linear_mix_test.cpp
+	linearMixTest.cpp
+	screenBufferTest.cpp
 	)
 
 set(SOURCE_FILES 
 	${SOURCE_CODE_DIR}/LinearMix.cpp
+	${SOURCE_CODE_DIR}/ScreenBuffer.cpp
 	)
 
 add_executable(color_chart_test ${TESTS} ${SOURCE_FILES})
