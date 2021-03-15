@@ -23,21 +23,41 @@ screen::BufferScreen screen::ScreenBuffer::getScreen() {
            std::reverse(oneline.begin(), oneline.end());
        }
        return screen::BufferScreen(screenHeight, oneline);
+
    } else if (cornersColors.downLeftCorner.has_value()) {
         //calculate first position in horizontal line
         uint16_t startTemp{cornersColors.topLeftCorner}, endTemp{cornersColors.downLeftCorner.value()};
+        auto needToReverse{false};
         if (cornersColors.topLeftCorner > cornersColors.downLeftCorner) {
             startTemp = cornersColors.downLeftCorner.value();
             endTemp = cornersColors.topLeftCorner;
+            needToReverse = true;
         }
         auto firstPixelsInLines = linearMix.mix(startTemp, endTemp, screenHeight);
+        if (needToReverse) {
+            std::reverse(firstPixelsInLines.begin(), firstPixelsInLines.end());
+        }
            
+        needToReverse = false;
         screen::BufferScreen buffer;
         for (auto& firstPixel : firstPixelsInLines) {
-            auto oneline = linearMix.mix(firstPixel, cornersColors.topRightCorner, screenWidth);
+            startTemp = firstPixel;
+            endTemp = cornersColors.topRightCorner;
+            if (firstPixel > cornersColors.topRightCorner) {
+                startTemp = cornersColors.topRightCorner;
+                endTemp = firstPixel;
+                needToReverse = true;
+            }
+            auto oneline = linearMix.mix(startTemp, endTemp, screenWidth);
+            if (needToReverse) {
+                std::reverse(oneline.begin(), oneline.end());
+            }
             buffer.emplace_back(oneline);
         }
         return buffer;
+
+   } else if (cornersColors.downRightCorner.has_value()) {
+        
    }
    return screen::BufferScreen(0, defines::OneLineGradient(0));
 }
