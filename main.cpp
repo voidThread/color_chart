@@ -11,13 +11,15 @@ int main(int argc, const char *argv[]) {
     screen::CornersColors cornersColors {firstColor, secondColor};
     if (argc == 5) {
         cornersColors.downLeftCorner = std::stoi(std::string(argv[4]), nullptr, 16);
+    } else if (argc == 6) {
+        cornersColors.downLeftCorner = std::stoi(std::string(argv[4]), nullptr, 16);
+        cornersColors.downRightCorner = std::stoi(std::string(argv[5]), nullptr, 16);
     }
  
-    screen::ScreenBuffer screenBuffer(16, 9);
+    Display display(argv[1]);
+    screen::ScreenBuffer screenBuffer(display.size().width, display.size().height);
     screenBuffer.setCornerColors(cornersColors);
     auto buffer = screenBuffer.getScreen();
-
-    Display display("dupa");
 
     int16_t y{0};
     for(auto& stripe : buffer) {

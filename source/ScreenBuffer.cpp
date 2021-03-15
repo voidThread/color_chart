@@ -1,5 +1,6 @@
 #include "ScreenBuffer.h"
 #include <algorithm>
+#include <iostream>
 
 using namespace color_chart;
 
@@ -24,7 +25,7 @@ screen::BufferScreen screen::ScreenBuffer::getScreen() {
        }
        return screen::BufferScreen(screenHeight, oneline);
 
-   } else if (cornersColors.downLeftCorner.has_value()) {
+   } else if (cornersColors.downLeftCorner.has_value() && cornersColors.downRightCorner.has_value() == false) {
         //calculate first position in horizontal line
         uint16_t startTemp{cornersColors.topLeftCorner}, endTemp{cornersColors.downLeftCorner.value()};
         auto needToReverse{false};
@@ -57,7 +58,44 @@ screen::BufferScreen screen::ScreenBuffer::getScreen() {
         return buffer;
 
    } else if (cornersColors.downRightCorner.has_value()) {
-        
+       screen::BufferScreen buffer;
+       auto needToReverse{false};
+       if (cornersColors.topLeftCorner > cornersColors.downLeftCorner.value()) {
+           std::swap(cornersColors.topLeftCorner, cornersColors.downLeftCorner.value());
+           needToReverse = true;
+       }
+       auto firstPixelsInLine = linearMix.mix(cornersColors.topLeftCorner, 
+               cornersColors.downLeftCorner.value(), screenHeight);
+       if (needToReverse) {
+           std::reverse(firstPixelsInLine.begin(), firstPixelsInLine.end());
+       }
+
+       needToReverse = false;
+       if (cornersColors.topRightCorner > cornersColors.downRightCorner.value()) {
+          std::swap(cornersColors.topRightCorner, cornersColors.downRightCorner.value());
+          needToReverse = true;
+       }
+       auto lastPixelsInLine = linearMix.mix(cornersColors.topRightCorner, 
+               cornersColors.downRightCorner.value(), screenHeight);
+       if (needToReverse) {
+           std::reverse(lastPixelsInLine.begin(), lastPixelsInLine.end());
+       }
+ 
+       auto lastPixel = lastPixelsInLine.begin();
+       for (auto& firstPixel : firstPixelsInLine) {
+           needToReverse = false;
+           if (firstPixel > *lastPixel) {
+               std::swap(firstPixel, *lastPixel);
+               needToReverse = true;
+           }
+           auto horizontalLine = linearMix.mix(firstPixel, *lastPixel, screenWidth);
+           if (needToReverse) {
+               std::reverse(horizontalLine.begin(), horizontalLine.end());
+           }
+           buffer.emplace_back(horizontalLine);
+           lastPixel = std::next(lastPixel);
+       }
+       return buffer;
    }
    return screen::BufferScreen(0, defines::OneLineGradient(0));
 }
