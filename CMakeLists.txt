@@ -8,17 +8,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 #add_subdirectory(tests)
 
-#set(SOURCE_HEADERS 
-#	${SOURCE_HEADERS_DIR}/Defines.h
-#	${SOURCE_HEADERS_DIR}/Display.h
-#	${SOURCE_HEADERS_DIR}/LinearMix.h
-#	${SOURCE_HEADERS_DIR}/ScreenBuffer.h
-#	)
-
 set(SOURCE_CODE 
 	${SOURCE_CODE_DIR}Display.cpp
 	${SOURCE_CODE_DIR}LinearMix.cpp
 	${SOURCE_CODE_DIR}ScreenBuffer.cpp
+	${SOURCE_CODE_DIR}ProgramSetup.cpp
 	)
 
 add_executable(color_chart main.cpp ${SOURCE_CODE} )

@@ -1,24 +1,24 @@
 #include "include/Display.h"
 #include "include/ScreenBuffer.h"
+#include "include/ProgramSetup.h"
+
 #include <iostream>
 
 int main(int argc, const char *argv[]) {
     using namespace color_chart;
+    DataFromUser colorsAndDisplayName;
 
-    uint16_t firstColor = std::stoi(std::string(argv[2]), nullptr, 16);
-    uint16_t secondColor = std::stoi(std::string(argv[3]), nullptr, 16);
-  
-    screen::CornersColors cornersColors {firstColor, secondColor};
-    if (argc == 5) {
-        cornersColors.downLeftCorner = std::stoi(std::string(argv[4]), nullptr, 16);
-    } else if (argc == 6) {
-        cornersColors.downLeftCorner = std::stoi(std::string(argv[4]), nullptr, 16);
-        cornersColors.downRightCorner = std::stoi(std::string(argv[5]), nullptr, 16);
+    try {
+      colorsAndDisplayName = ParseCommandLine(argc, argv).getInputData();
+
+    }catch (const std::exception &exception) {
+      std::cerr << "Problem with parsing line\n" << exception.what();
+      return -1;
     }
- 
-    Display display(argv[1]);
+    
+    Display display(colorsAndDisplayName.displayName);
     screen::ScreenBuffer screenBuffer(display.size().width, display.size().height);
-    screenBuffer.setCornerColors(cornersColors);
+    screenBuffer.setCornerColors(colorsAndDisplayName.corners);
     auto buffer = screenBuffer.getScreen();
 
     int16_t y{0};
